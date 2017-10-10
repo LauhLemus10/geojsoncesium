@@ -1,20 +1,59 @@
 <!DOCTYPE html>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <html>
-    <head>
-        <title>MI CESIUM</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="Build/Cesium/Cesium.js"></script>
-        <style>
-            @import url("Build/Cesium/Widgets/widgets.css")
-        </style>
-    </head>
-    <body>
-        <div id="cesiumContainer"></div>
-    </body>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<!-- Importar biblioteca Cesium -->
+<script src="Build/Cesium/Cesium.js"></script>
+<style>
+@import url("Build/Cesium/Widgets/widgets.css");
+</style>
+</head>
+<body>
+<!-- Contenedor del visor Cesium -->
+<div id="cesiumContainer">
+</div>
+<script>
+var terrain = Cesium.createDefaultTerrainProviderViewModels();
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    terrainProviderViewModels: terrain,
+    selectedTerrainProviderViewModel: terrain[1]
+});
+var terrainSamplePositions = [];
+var dataSource2 = new Cesium.GeoJsonDataSource();
+var promise = dataSource2.load('edificios.geojson');
+promise.then(function(dataSource2) {
+    viewer.dataSources.add(dataSource2);
+    viewer.zoomTo(dataSource2);
+    var entities2 = dataSource2.entities.values;
+    var colorHash = {};
+    for (var i = 0; i < entities2.length; i++) {
+        var entity = entities2[i];
+        var name = entity.Elev_in_m;
+        var color = colorHash[name];
+        if (!color) {
+            color = Cesium.Color.BROWN; 
+            colorHash[name] = color;
+        }
+        entity.polygon.material = color;
+        entity.polygon.outline = false;
+        var position = entity.polygon.hierarchy.getValue().positions[0];
+        terrainSamplePositions.push(Cesium.Cartographic.fromCartesian(position));
+        entity.polygon.extrudedHeight = entity.properties.altura;
+        entity.polygon.height = 0;
+    }
+    Cesium.when(Cesium.sampleTerrain(viewer.terrainProvider, 11, terrainSamplePositions), function() {
+        for (var i = 0; i < entities2.length; i++) {
+            var entity = entities2[i];
+            var terrainHeight = terrainSamplePositions[i].height;
+            entity.polygon.height = terrainHeight;
+            entity.polygon.extrudedHeight = entity.properties.altura + terrainHeight;
+        }
+    });
+}).otherwise(function(error){
+    console.error(error);
+    console.error('No se cumplió la promesa!!');
+});
+</script>
+</body>
 </html>
