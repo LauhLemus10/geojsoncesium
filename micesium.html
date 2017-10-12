@@ -21,7 +21,7 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 });
 var terrainSamplePositions = [];
 var dataSource2 = new Cesium.GeoJsonDataSource();
-var promise = dataSource2.load('quiz.geojson');
+var promise = dataSource2.load('edificios.geojson');
 promise.then(function(dataSource2) {
     viewer.dataSources.add(dataSource2);
     viewer.zoomTo(dataSource2);
@@ -54,7 +54,6 @@ promise.then(function(dataSource2) {
     console.error(error);
     console.error('No se cumplió la promesa!!');
 });
-
 </script>
 </body>
 </html>
