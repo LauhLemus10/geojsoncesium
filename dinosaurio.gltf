@@ -1,0 +1,17 @@
+{
+    "asset": {
+        "version": "2.0"
+    },
+    "buffers": [
+        {
+            "byteLength": 0,
+            "name": "buffer_empty",
+            "uri": "buffer_empty.bin"
+        }
+    ],
+    "samplers": [
+        {
+            "name": "default"
+        }
+    ]
+}

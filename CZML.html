@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<!-- Importar biblioteca Cesium -->
+<script src="Build/Cesium/Cesium.js"></script>
+<style>
+@import url("Build/Cesium/Widgets/widgets.css");
+</style>
+</head>
+<body>
+<!-- Contenedor del visor Cesium -->
+<div id="cesiumContainer">
+</div>
+<script>
+    
+    var czml = [{
+    "id" : "document",
+    "name" : "CZML Path",
+    "version" : "1.0",
+    "clock": {
+        "interval": "2017-08-04T10:00:00Z/2017-08-04T15:00:00Z",
+        "currentTime": "2017-08-04T10:00:00Z",
+        "multiplier": 1
+    }
+}, {
+    "id" : "path",
+    "name" : "Ruta animada en CESIUM!!!",
+    "description" : "Vuelo en parapente - SIG 3D",
+    "availability" : "2017-08-04T10:00:00Z/2017-08-04T15:00:00Z",
+    "path" : {
+        "material" : {
+            "polylineOutline" : {
+                "color" : {
+                    "rgba" : [255, 0, 255, 255]
+                },
+                "outlineColor" : {
+                    "rgba" : [0, 255, 255, 255]
+                },
+                "outlineWidth" : 5
+            }
+        },
+        "width" : 10,
+        "leadTime" : 10,
+        "trailTime" : 1000,
+        "resolution" : 5
+    },
+    "billboard" : {
+        "image" : "dinosaurio.png",
+        "scale" : 1,
+        "eyeOffset": {
+            "cartesian": [ 0.0, 0.0, -10.0 ]
+        }
+    },
+    "position" : {
+        "epoch" : "2017-08-04T10:00:00Z",
+        "cartographicDegrees" : [
+            0,-74.055,4.6,3167,
+            10,-74.055452,4.604606,3152,
+            20,-74.055345,4.603814,3135,
+            30,-74.054993,4.603705,3129,
+            40,-74.057648,4.603419,2912,
+            50,-74.059664,4.603514,2765,
+            60,-74.051370,4.602909,2683
+        ]
+    }
+}];
+var terrainProvider = new Cesium.CesiumTerrainProvider({
+url : 'https://assets.agi.com/stk-terrain/v1/tilesets/world/tiles',
+requestVertexNormals : true
+});
+var viewer = new Cesium.Viewer('cesiumContainer', {
+terrainProvider : terrainProvider,
+baseLayerPicker : false
+});
+viewer.dataSources.add(Cesium.CzmlDataSource.load(czml)).then(function(ds) {
+viewer.trackedEntity = ds.entities.getById('path');
+});
+</script>
+</body>
+</html>
